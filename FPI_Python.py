@@ -1,5 +1,5 @@
 from skimage import data, io, filters
-from skimage.color import rgb2gray
+from skimage.color import rgb2gray, gray2rgb
 from skimage.util import img_as_ubyte
 from skimage.transform import resize
 
@@ -14,31 +14,34 @@ from skimage.feature import peak_local_max
 foreground = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\narwhal.jpg')
 background = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\banaSplit.jpg')
 
-#foreground = resize(foreground, (640, 640))
+foreground = resize(foreground, (640, 640))
 
 #into grayscale
 foreground_gray = rgb2gray(foreground)
-background_gray = rgb2gray(background) 
+#background_gray = rgb2gray(background) 
 
 #quantization
 foreground_quantized = img_as_ubyte(foreground_gray) 
 foreground_quantized = foreground_quantized // 64
 
-background_quantized = img_as_ubyte(background_gray) 
-background_quantized = background_quantized // 8
+#background_quantized = img_as_ubyte(background_gray) 
+#background_quantized = background_quantized // 8
 
-
-
+foreground_edges = filters.sobel(foreground_quantized)
+foreground_edges = 255 - foreground_edges
 #(100, 100)
-#merged = foreground_quantized * background_quantized
-#io.imshow(merged, cmap='gray')
+
+foreground_edges2 = gray2rgb(foreground_edges)
+merged = foreground_edges2 * background
+
+io.imshow(merged)
 #io.imshow(foreground_quantized, cmap='gray')
 #io.show()
 
 
 # Now we want to separate the two objects in image
 # Generate the markers as local maxima of the distance to the background
-distance = ndimage.distance_transform_edt(foreground_quantized)
+distance = ndimage.distance_transform_edt(foreground_edges)
 local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
                             labels=foreground_quantized)
 markers = ndimage.label(local_maxi)[0]
