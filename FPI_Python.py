@@ -154,12 +154,10 @@ foreground_texture = foreground[:,:,:]
 for i in range(0,foreground_gray.shape[0]):
     for j in range(0,foreground_gray.shape[1]):
         if trueMap[i][j] == True:
-            for m in range(4):
-                for n in range(4):
-                    print('olar')
-                    #foreground_texture[i+m-2,j+n-2,0] = background[i+m-2,j+n-2,0]
-                    #foreground_texture[i+m-2,j+n-2,1] = background[i+m-2,j+n-2,1]
-                    #foreground_texture[i+m-2,j+n-2,2] = background[i+m-2,j+n-2,2]
+            if background_gray[i,j] - foreground_gray[i,j] > 0:
+                background_gray[i,j] = background_gray[i,j] - foreground_gray[i,j]
+            else:
+                 background_gray[i,j] = 0
 '''         
 for i in range(0,foreground_gray.shape[0]):
     for j in range(0,foreground_gray.shape[1]):
@@ -168,9 +166,9 @@ for i in range(0,foreground_gray.shape[0]):
                 foreground_xyz[i,j,1] = background_xyz[i,j,1]
                 foreground_xyz[i,j,2] = background_xyz[i,j,2]
 '''      
-background_gray[:,:] = background_gray[:,:] - foreground_gray[:,:]
-mask = background_gray < 0
-background_gray[mask] = 0
+#background_gray[:,:] = background_gray[:,:] - foreground_gray[:,:]
+#mask = background_gray < 0
+#background_gray[mask] = 0
 foreground_texture= growImage(background_gray,trueMap,3)
 
 io.imshow(foreground_texture,cmap='gray')
