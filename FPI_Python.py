@@ -14,7 +14,7 @@ from skimage.morphology import erosion, disk
 from skimage.color import convert_colorspace
 
 
-'''
+
 
 
 
@@ -113,7 +113,6 @@ def growImage(input_image, synth_mask, window):
             MAX_THRESH = 1.1 * MAX_THRESH
 
     return image[i0:-i0, j0:-j0]
-'''
 
 
 
@@ -131,9 +130,11 @@ def growImage(input_image, synth_mask, window):
 
 
 
-foreground = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\narwhal.jpg')
-background = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\mountain.jpg')
+
+foreground = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\narwhalP.jpg')
+background = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\mountainP.jpg')
 foreground_gray = rgb2gray(foreground)
+background_gray = rgb2gray(background)
 mask = foreground != 0
 
 trueMap = [[False for x in range(foreground_gray.shape[0])] for x in range(foreground_gray.shape[1])] 
@@ -156,9 +157,9 @@ for i in range(0,foreground_gray.shape[0]):
             for m in range(4):
                 for n in range(4):
                     print('olar')
-                    foreground_texture[i+m-2,j+n-2,0] = background[i+m-2,j+n-2,0]
-                    foreground_texture[i+m-2,j+n-2,1] = background[i+m-2,j+n-2,1]
-                    foreground_texture[i+m-2,j+n-2,2] = background[i+m-2,j+n-2,2]
+                    #foreground_texture[i+m-2,j+n-2,0] = background[i+m-2,j+n-2,0]
+                    #foreground_texture[i+m-2,j+n-2,1] = background[i+m-2,j+n-2,1]
+                    #foreground_texture[i+m-2,j+n-2,2] = background[i+m-2,j+n-2,2]
 '''         
 for i in range(0,foreground_gray.shape[0]):
     for j in range(0,foreground_gray.shape[1]):
@@ -167,8 +168,10 @@ for i in range(0,foreground_gray.shape[0]):
                 foreground_xyz[i,j,1] = background_xyz[i,j,1]
                 foreground_xyz[i,j,2] = background_xyz[i,j,2]
 '''      
+background_gray[:,:] = background_gray[:,:] - foreground_gray[:,:]
+foreground_texture= growImage(background_gray,trueMap,3)
 
-io.imshow(foreground_texture)
+io.imshow(foreground_texture,cmap='gray')
 io.show()
 print('terminei')
 #print(trueMap)
