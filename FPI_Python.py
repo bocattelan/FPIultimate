@@ -135,7 +135,7 @@ foreground = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\narwhalP.jpg')
 background = io.imread('C:\Users\Bruno\Workspace\FPIultimate\\mountainP.jpg')
 foreground_gray = rgb2gray(foreground)
 background_gray = rgb2gray(background)
-mask = foreground != 0
+
 
 trueMap = [[False for x in range(foreground_gray.shape[0])] for x in range(foreground_gray.shape[1])] 
 print(foreground.max())
@@ -169,6 +169,8 @@ for i in range(0,foreground_gray.shape[0]):
                 foreground_xyz[i,j,2] = background_xyz[i,j,2]
 '''      
 background_gray[:,:] = background_gray[:,:] - foreground_gray[:,:]
+mask = background_gray < 0
+background_gray[mask] = 0
 foreground_texture= growImage(background_gray,trueMap,3)
 
 io.imshow(foreground_texture,cmap='gray')
