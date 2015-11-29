@@ -24,16 +24,19 @@ foreground_gray = rgb2gray(foreground)
 foreground_quantized = img_as_ubyte(foreground_gray) 
 foreground_quantized = foreground_quantized // 64
 
+
 #background_quantized = img_as_ubyte(background_gray) 
 #background_quantized = background_quantized // 8
 
-foreground_edges = filters.sobel(foreground_quantized)
-foreground_edges = 255 - foreground_edges
+#foreground_edges = filters.sobel(foreground_quantized)
+#foreground_edges = 255 - foreground_edges
 #(100, 100)
+mask = foreground_quantized < 3
+foreground_quantized[mask] = 128 
 
-foreground_edges2 = gray2rgb(foreground_edges)
-merged = foreground_edges2 * background
-
+foreground_RGB = gray2rgb(foreground_quantized)
+merged = foreground_RGB + background
+print(foreground_quantized)
 io.imshow(merged)
 #io.imshow(foreground_quantized, cmap='gray')
 #io.show()
@@ -41,7 +44,9 @@ io.imshow(merged)
 
 # Now we want to separate the two objects in image
 # Generate the markers as local maxima of the distance to the background
-distance = ndimage.distance_transform_edt(foreground_edges)
+
+#foreground_edges = 255 - foreground_edges
+distance = ndimage.distance_transform_edt(foreground_quantized)
 local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
                             labels=foreground_quantized)
 markers = ndimage.label(local_maxi)[0]
